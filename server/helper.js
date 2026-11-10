@@ -9,9 +9,9 @@ export const hasher = (() => {
                 password = randomizer.getRandomString(128);
             }
 
-            return crypto.createHash("sha3-512")
+            return crypto.createHash("sha512")
                 .update(password)
-                .update(crypto.createHash("sha3-512").update(salt, "utf8").digest("hex"))
+                .update(crypto.createHash("sha512").update(salt, "utf8").digest("hex"))
                 .digest("hex");
         }
     }

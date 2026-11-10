@@ -1,3 +1,17 @@
+# 本仓库运行方式
+
+默认使用 Cloudflare Workers + Durable Objects，支持本地局域网访问。详见 [本地开发与 Cloudflare 部署](docs/cloudflare.md)。默认文件经 Cloudflare WebSocket 中继，以下上游文档中的 WebRTC 隐私说明仅适用于切换后的 WebRTC 模式。
+
+## OpenUse 聊天界面
+
+首页使用类似微信的设备会话与消息布局。选择左侧在线设备后，可从底部输入文字、添加或拖入文件。文件接收确认、下载和传输状态直接显示在消息中；送达状态由对端确认，拒收与断线单独显示。聊天记录与接收文件仅保留在当前页面会话中，刷新后清除。
+
+点击聊天区顶部“本机名”或左下角“修改”可设置本机名，对端会同步看到；选择其他设备后，可点击聊天区顶部“备注”设置仅在本地显示的设备备注。名称与备注保存在当前浏览器中，新版客户端重连后仍能关联备注；备注不是身份认证依据。留空可恢复默认名称或清除备注。设备列表支持右键菜单（手机长按）：“更改备注”直接编辑对应设备，“删除对话”仅清除该设备在本地的聊天记录和草稿，不修改备注或断开连接；删除后 15 秒内可撤销。传输中的对话不能删除。
+
+设备配对、公共房间和已配对设备管理仍可从顶部与设置菜单进入。新增页面支持中、英、日、韩、德、西、葡七种语言，其他语言回退英文，并跟随现有主题设置。
+
+界面来源：`public/scripts/chat.js`、`public/scripts/chat-i18n.js`、`public/styles/chat.css`。在当前多项目工作区中，先启动本项目的本地服务，再从工作区根目录运行 `node scripts/debug-airdrop-chat.mjs`，验证两个隔离设备之间的真实文字/文件传输、拒收和断线；测试使用 OfficeDocument 已安装的 Playwright 与本机 Chrome，默认连接端口 4312，可通过 `TEST_URL` 指定其他测试服务。
+
 <div align="center">
   <a href="https://github.com/schlagmichdoch/PairDrop">
     <img src="public/images/android-chrome-512x512.png" alt="Logo"  width="150" height="150">

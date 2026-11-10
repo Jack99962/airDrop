@@ -69,7 +69,7 @@ class ServerConnection {
 
     _connect() {
         clearTimeout(this._reconnectTimer);
-        if (this._isConnected() || this._isConnecting() || this._isOffline()) return;
+        if (!this._config || this._isConnected() || this._isConnecting() || this._isOffline()) return;
         if (this._isReconnect) {
             Events.fire('notify-user', {
                 message: Localization.getTranslation("notifications.connecting"),
@@ -344,7 +344,7 @@ class Peer {
     _send(message) {}
 
     sendDisplayName(displayName) {
-        this.sendJSON({type: 'display-name-changed', displayName: displayName});
+        this.sendJSON({type: 'display-name-changed', displayName: displayName, deviceId: window.openUseChat?.deviceId});
     }
 
     _isSameBrowser() {
@@ -668,6 +668,7 @@ class Peer {
         if (!this._filesQueue.length) {
             this._busy = false;
             Events.fire('notify-user', Localization.getTranslation("notifications.file-transfer-completed"));
+            Events.fire('chat-files-sent', {peerId: this._peerId});
             Events.fire('files-sent'); // used by 'Snapdrop & PairDrop for Android' app
         }
         else {
@@ -677,6 +678,7 @@ class Peer {
 
     _onFileTransferRequestResponded(message) {
         if (!message.accepted) {
+            Events.fire('chat-files-declined', {peerId: this._peerId});
             Events.fire('set-progress', {peerId: this._peerId, progress: 1, status: 'wait'});
             this._filesRequested = null;
             if (message.reason === 'ios-memory-limit') {
@@ -690,6 +692,7 @@ class Peer {
     }
 
     _onMessageTransferCompleted() {
+        Events.fire('text-transfer-complete', {peerId: this._peerId});
         Events.fire('notify-user', Localization.getTranslation("notifications.message-transfer-completed"));
     }
 
@@ -712,7 +715,7 @@ class Peer {
             this._displayName = message.displayName;
         }
 
-        Events.fire('peer-display-name-changed', {peerId: this._peerId, displayName: message.displayName});
+        Events.fire('peer-display-name-changed', {peerId: this._peerId, displayName: message.displayName, deviceId: typeof message.deviceId === 'string' && /^[a-f0-9-]{32,36}$/.test(message.deviceId) ? message.deviceId : undefined});
 
         if (!displayNameHasChanged) return;
         Events.fire('notify-peer-display-name-changed', this._peerId);
@@ -1047,7 +1050,7 @@ class PeersManager {
             return;
         }
 
-        if (window.isRtcSupported && rtcSupported) {
+        if (!this._wsConfig.forceWs && window.isRtcSupported && rtcSupported) {
             this.peers[peerId] = new RTCPeer(this._server, isCaller, peerId, roomType, roomId, this._wsConfig.rtcConfig);
         }
         else if (this._wsConfig.wsFallback) {

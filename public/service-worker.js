@@ -1,14 +1,19 @@
-const cacheVersion = 'v1.11.2';
+const cacheVersion = 'v1.11.2-chat-8';
 const cacheTitle = `pairdrop-cache-${cacheVersion}`;
 const relativePathsToCache = [
     './',
     'index.html',
     'manifest.json',
     'styles/styles-main.css',
+    'styles/chat.css?v=6',
+    'scripts/chat-i18n.js?v=4',
+    'scripts/chat.js?v=6',
     'styles/styles-deferred.css',
     'scripts/browser-tabs-connector.js',
     'scripts/localization.js',
     'scripts/main.js',
+    'scripts/openuse-toolbar.js?ui=chat-zh',
+    'vendor/openuse/1.0.0/openuse.js?ui=outside-collapse',
     'scripts/network.js',
     'scripts/persistent-storage.js',
     'scripts/ui.js',
@@ -22,6 +27,8 @@ const relativePathsToCache = [
     'sounds/blop.mp3',
     'sounds/blop.ogg',
     'images/favicon-96x96.png',
+    'images/openuse-logo.png',
+    'images/openuse-favicon.png',
     'images/favicon-96x96-notification.png',
     'images/android-chrome-192x192.png',
     'images/android-chrome-192x192-maskable.png',

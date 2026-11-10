@@ -43,9 +43,9 @@ class BrowserTabsConnector {
     }
 
     static async removePeerIdFromLocalStorage(peerId) {
-        let peerIdsBrowser = JSON.parse(localStorage.getItem('peer_ids_browser'));
+        let peerIdsBrowser = JSON.parse(localStorage.getItem('peer_ids_browser')) || [];
         const index = peerIdsBrowser.indexOf(peerId);
-        peerIdsBrowser.splice(index, 1);
+        if (index !== -1) peerIdsBrowser.splice(index, 1);
         localStorage.setItem('peer_ids_browser', JSON.stringify(peerIdsBrowser));
         return peerId;
     }

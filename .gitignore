@@ -5,3 +5,6 @@ qrcode-svg/
 turnserver.conf
 rtc_config.json
 ssl/
+
+.wrangler/
+.dev.vars

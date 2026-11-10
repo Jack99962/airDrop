@@ -1,0 +1,45 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "pairdrop-airdrop",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": [
+      "/config",
+      "/server",
+      "/server/*"
+    ]
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "SIGNALING",
+        "class_name": "SignalingHub"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "SignalingHub"
+      ]
+    }
+  ],
+  "vars": {
+    "WS_FALLBACK": "true",
+    "FORCE_WS": "true"
+  },
+  "account_id": "3fc218e7d59019c25840e73f893d0a4c",
+  "routes": [
+    {
+      "pattern": "air.whogogo.com",
+      "custom_domain": true
+    }
+  ]
+}

@@ -748,7 +748,7 @@ class Dialog {
             window.blur();
         }
         document.title = 'PairDrop | Transfer Files Cross-Platform. No Setup, No Signup.';
-        changeFavicon("images/favicon-96x96.png");
+        changeFavicon("images/openuse-favicon.png");
         this.correspondingPeerId = undefined;
     }
 
@@ -894,7 +894,7 @@ class ReceiveFileDialog extends ReceiveDialog {
         this.$downloadBtn = this.$el.querySelector('#download-btn');
         this.$shareBtn = this.$el.querySelector('#share-btn');
 
-        Events.on('files-received', e => this._onFilesReceived(e.detail.peerId, e.detail.files, e.detail.imagesOnly, e.detail.totalSize));
+        Events.on('files-received', e => { if (!window.openUseChat) this._onFilesReceived(e.detail.peerId, e.detail.files, e.detail.imagesOnly, e.detail.totalSize); });
         this._filesQueue = [];
     }
 
@@ -1050,7 +1050,7 @@ class ReceiveFileDialog extends ReceiveDialog {
         document.title = files.length === 1
             ? `${ Localization.getTranslation("document-titles.file-received") } - PairDrop`
             : `${ Localization.getTranslation("document-titles.file-received-plural", null, {count: files.length}) } - PairDrop`;
-        changeFavicon("images/favicon-96x96-notification.png");
+        changeFavicon("images/openuse-favicon.png");
 
         Events.fire('set-progress', {peerId: peerId, progress: 1, status: 'process'})
         this.show();
@@ -1108,7 +1108,7 @@ class ReceiveRequestDialog extends ReceiveDialog {
         this.$acceptRequestBtn.addEventListener('click', _ => this._respondToFileTransferRequest(true));
         this.$declineRequestBtn.addEventListener('click', _ => this._respondToFileTransferRequest(false));
 
-        Events.on('files-transfer-request', e => this._onRequestFileTransfer(e.detail.request, e.detail.peerId))
+        Events.on('files-transfer-request', e => { if (!window.openUseChat) this._onRequestFileTransfer(e.detail.request, e.detail.peerId); })
         Events.on('keydown', e => this._onKeyDown(e));
         this._filesTransferRequestQueue = [];
     }
@@ -1156,7 +1156,7 @@ class ReceiveRequestDialog extends ReceiveDialog {
         this.$receiveTitle.innerText = transferRequestTitle;
 
         document.title =  `${transferRequestTitle} - PairDrop`;
-        changeFavicon("images/favicon-96x96-notification.png");
+        changeFavicon("images/openuse-favicon.png");
 
         this.$acceptRequestBtn.removeAttribute('disabled');
         this.show();
@@ -2016,7 +2016,7 @@ class SendTextDialog extends Dialog {
 class ReceiveTextDialog extends Dialog {
     constructor() {
         super('receive-text-dialog');
-        Events.on('text-received', e => this._onText(e.detail.text, e.detail.peerId));
+        Events.on('text-received', e => { if (!window.openUseChat) this._onText(e.detail.text, e.detail.peerId); });
         this.$text = this.$el.querySelector('#text');
         this.$copy = this.$el.querySelector('#copy');
         this.$close = this.$el.querySelector('#close');
@@ -2050,7 +2050,7 @@ class ReceiveTextDialog extends Dialog {
         window.blop.play();
         this._receiveTextQueue.push({text: text, peerId: peerId});
         this._setDocumentTitleMessages();
-        changeFavicon("images/favicon-96x96-notification.png");
+        changeFavicon("images/openuse-favicon.png");
 
         if (this.isShown() || this._hideTimeout) return;
 
@@ -2059,7 +2059,7 @@ class ReceiveTextDialog extends Dialog {
 
     _dequeueRequests() {
         this._setDocumentTitleMessages();
-        changeFavicon("images/favicon-96x96-notification.png");
+        changeFavicon("images/openuse-favicon.png");
 
         let {text, peerId} = this._receiveTextQueue.shift();
         this._showReceiveTextDialog(text, peerId);
@@ -2423,7 +2423,7 @@ class AboutUI {
 
     async _evaluateBtnConfig($btn, config) {
         // if config is not set leave everything as default
-        if (!Object.keys(config).length) return;
+        if (!config || !Object.keys(config).length) return;
 
         if (config.active === "false") {
             $btn.setAttribute('hidden', true);
@@ -2507,7 +2507,7 @@ class Notifications {
     _notify(title, body) {
         const config = {
             body: body,
-            icon: '/images/logo_transparent_128x128.png',
+            icon: '/images/openuse-logo.png',
         }
         let notification;
         try {

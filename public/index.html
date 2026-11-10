@@ -26,22 +26,50 @@
     <meta name="twitter:description" content="Instantly share images, videos, PDFs, and links with people nearby. Peer2Peer and Open Source. No Setup, No Signup.">
     <meta name="og:description" content="Instantly share images, videos, PDFs, and links with people nearby. Peer2Peer and Open Source. No Setup, No Signup.">
     <!-- Icons -->
-    <link rel="icon" sizes="96x96" href="images/favicon-96x96.png">
-    <link rel="shortcut icon" href="images/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="64x45" href="images/openuse-favicon.png">
+    <link rel="shortcut icon" href="images/openuse-favicon.png">
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
     <link rel="apple-touch-icon-precomposed" href="images/apple-touch-icon.png">
     <meta name="msapplication-TileImage" content="images/mstile-150x150.png">
     <link rel="fluid-icon" type="image/png" href="images/android-chrome-192x192.png">
-    <meta name="twitter:image" content="images/logo_transparent_512x512.png">
-    <meta property="og:image" content="images/logo_transparent_512x512.png">
+    <meta name="twitter:image" content="images/openuse-logo.png">
+    <meta property="og:image" content="images/openuse-logo.png">
     <!-- Resources -->
     <link rel="preload" href="lang/en.json" as="fetch">
     <link rel="preload" href="fonts/OpenSans/static/OpenSans-Medium.ttf" as="font" type="font/ttf" crossorigin>
     <link rel="stylesheet" type="text/css" href="styles/styles-main.css">
+    <link rel="stylesheet" href="styles/chat.css?v=6">
     <link rel="manifest" href="manifest.json">
 </head>
 
-<body translate="no">
+<body translate="no" class="chat-layout">
+    <div id="chat-app">
+      <aside class="chat-sidebar">
+        <div class="chat-brand-row"><img src="images/openuse-logo.png" alt="" class="chat-avatar"><h1>Open<span>Use</span></h1><button class="chat-icon-btn" data-action="connect" data-label="connect" data-icon="plus"></button></div>
+        <label class="chat-search"><span data-icon="search"></span><input id="chat-search" data-placeholder="search" type="search"></label>
+        <nav class="chat-navigation" aria-label="PairDrop">
+          <button id="chat-home" class="chat-section-heading"><span data-chat="devices"></span><span id="chat-device-count">0</span></button>
+          <div id="chat-peer-list"></div>
+          <div class="chat-device-empty" data-chat="empty"></div>
+        </nav>
+        <button type="button" class="chat-local-device" data-action="rename-self" data-label="renameSelf"><span data-icon="laptop"></span><span id="chat-self-name"></span><span class="chat-local-edit" data-chat="editName"></span></button>
+      </aside>
+      <div id="chat-peer-menu" class="chat-peer-menu" role="menu" hidden><button type="button" role="menuitem" data-action="context-remark" data-chat="changeRemark"></button><button type="button" role="menuitem" data-action="context-delete" data-chat="deleteConversation" id="chat-delete-conversation"></button></div>
+      <dialog id="chat-name-dialog" class="chat-name-dialog" aria-labelledby="chat-name-title">
+        <form id="chat-name-form"><h2 id="chat-name-title"></h2><label for="chat-name-input" id="chat-name-label"></label><input id="chat-name-input" maxlength="40" autocomplete="off"><p id="chat-name-help"></p><p id="chat-name-error" role="alert"></p><div class="chat-name-actions"><button type="button" data-action="cancel-name" data-chat="cancel"></button><button type="submit" data-chat="save" id="chat-name-save"></button></div></form>
+      </dialog>
+      <main class="chat-main">
+        <div class="chat-conversation-header"><button class="chat-icon-btn chat-mobile-back" data-action="back" data-label="back" data-icon="back"></button><div class="chat-conversation-title"><h2 id="chat-title">PairDrop</h2><p><i class="chat-status-dot"></i><span id="chat-connection" data-chat="connecting"></span></p></div><button class="chat-name-entry" data-action="rename-self" data-chat="myName" data-label="renameSelf"></button><button class="chat-name-entry" data-action="remark" data-chat="noteAction" data-label="remark" id="chat-remark-button" hidden></button><button class="chat-icon-btn" data-action="menu" data-label="settings" data-icon="more"></button></div>
+        <div class="chat-settings" id="chat-settings" hidden><button data-action="language" id="chat-language-button"></button><button data-action="theme" id="chat-theme-button"></button><button data-action="rooms" data-chat="connect"></button><button data-action="paired" data-chat="paired"></button><button data-action="help" data-chat="help"></button></div>
+        <div class="chat-feed" id="chat-feed" role="log" aria-live="polite"></div>
+        <div class="chat-compose-area">
+          <div id="chat-notice" role="status"></div>
+          <div id="chat-delete-notice" role="status" hidden><span data-chat="conversationDeleted"></span><button type="button" data-action="undo-delete" data-chat="undo"></button></div>
+          <form class="chat-composer" id="chat-form"><button type="button" class="chat-icon-btn chat-attach" data-action="files" data-label="attach" data-icon="plus"></button><textarea id="chat-message" rows="1" data-placeholder="placeholder"></textarea><button type="submit" class="chat-send" data-label="send" data-icon="send"></button><input id="chat-file-input" type="file" multiple hidden></form>
+        </div>
+      </main>
+    </div>
+
     <header class="row-reverse wrap opacity-0">
         <a href="#about" class="icon-button" data-i18n-key="header.about" data-i18n-attrs="title aria-label">
             <svg class="icon">
@@ -332,7 +360,7 @@
                         <span>(Ukrainian)</span>
                     </button>
                     <button class="btn fw wrap" value="zh-CN">
-                        <span lang="zh-CN">汉语</span>
+                        <span lang="zh-CN">简体中文</span>
                         <span>&nbsp;&nbsp;-&nbsp;&nbsp;</span>
                         <span>(Simplified Chinese)</span>
                     </button>
@@ -828,7 +856,11 @@
     <script src="scripts/localization.js" defer></script>
     <script src="scripts/persistent-storage.js" defer></script>
     <script src="scripts/ui-main.js" defer></script>
+    <script src="scripts/chat-i18n.js?v=4" defer></script>
+    <script src="scripts/chat.js?v=6" defer></script>
     <script src="scripts/main.js" defer></script>
+    <script src="/vendor/openuse/1.0.0/openuse.js?ui=outside-collapse" defer></script>
+    <script src="scripts/openuse-toolbar.js?ui=chat-zh" defer></script>
     <!-- Sounds -->
     <audio id="blop" autobuffer="true">
         <source src="sounds/blop.mp3" type="audio/mpeg">
