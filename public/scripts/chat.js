@@ -38,6 +38,8 @@
       this.urls = new Set();
       this.noticeKey = "";
       this.drafts = new Map();
+      this.mobileLayout = matchMedia("(max-width:600px)");
+      this.installMobileZoomGuard();
       this.installPeerMenu();
       this.aliases = {};
       try {
@@ -67,6 +69,14 @@
       this.root.addEventListener("click", (event) => {
         const action = event.target.closest("[data-action]");
         if (action) this.action(action.dataset.action);
+      });
+      this.root.querySelector(".chat-main").addEventListener("click", () => {
+        if (this.mobileLayout.matches && this.root.classList.contains("show-sidebar"))
+          this.root.classList.remove("show-sidebar");
+      });
+      this.mobileLayout.addEventListener("change", () => {
+        this.root.classList.remove("show-sidebar");
+        this.renderPeers();
       });
       $("chat-home").addEventListener("click", () => this.select(null));
       $("chat-search").addEventListener("input", () => this.renderPeers());
@@ -242,6 +252,29 @@
           this.urls.forEach((url) => URL.revokeObjectURL(url));
       });
       this.localize();
+    }
+    installMobileZoomGuard() {
+      const preventZoom = (event) => event.preventDefault();
+      document.addEventListener("gesturestart", preventZoom, { passive: false });
+      document.addEventListener("gesturechange", preventZoom, { passive: false });
+      document.addEventListener("gestureend", preventZoom, { passive: false });
+      document.addEventListener(
+        "touchmove",
+        (event) => {
+          if (event.touches.length > 1) event.preventDefault();
+        },
+        { passive: false },
+      );
+      let lastTouchEnd = 0;
+      document.addEventListener(
+        "touchend",
+        (event) => {
+          const now = Date.now();
+          if (now - lastTouchEnd < 300) event.preventDefault();
+          lastTouchEnd = now;
+        },
+        { passive: false },
+      );
     }
     sound() {
       const result = $("blop")?.play();
@@ -752,6 +785,7 @@
       const query = $("chat-search").value.toLowerCase();
       let online = 0;
       this.peers.forEach((peer, id) => {
+        if (this.mobileLayout.matches && !peer.online) return;
         if (!peer.online && !(this.messages.get(id) || []).length) return;
         if (peer.online) online++;
         const name = this.name(id);

@@ -11,6 +11,8 @@ body.chat-layout {
   background: var(--chat-bg);
   color: var(--chat-text);
   overflow: hidden;
+  touch-action: pan-x pan-y;
+  overscroll-behavior: none;
 }
 body.chat-layout.dark-theme {
   --chat-bg: #1d2228;
@@ -634,13 +636,53 @@ body.chat-layout > canvas {
 @media (max-width: 600px) {
   .chat-sidebar {
     position: absolute;
-    inset: 0;
-    width: 100%;
+    inset: 0 auto 0 0;
+    width: 33.333333vw;
     z-index: 6;
     display: none;
+    box-shadow: 8px 0 24px #182e4424;
   }
   #chat-app.show-sidebar .chat-sidebar {
     display: flex;
+  }
+  #chat-app.show-sidebar .chat-main {
+    cursor: pointer;
+  }
+  .chat-sidebar .chat-brand-row,
+  .chat-sidebar .chat-search,
+  .chat-sidebar .chat-local-device,
+  .chat-sidebar .chat-section-heading {
+    display: none;
+  }
+  .chat-navigation {
+    padding: max(12px, env(safe-area-inset-top)) 5px
+      max(12px, env(safe-area-inset-bottom));
+  }
+  #chat-app .chat-nav-row {
+    min-width: 0;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px 4px;
+    text-align: center;
+  }
+  .chat-nav-row > span:not(.chat-circle-icon):not(.chat-live-badge) {
+    width: 100%;
+  }
+  .chat-nav-row strong {
+    font-size: 12px;
+  }
+  .chat-nav-row small,
+  .chat-live-badge {
+    display: none;
+  }
+  .chat-circle-icon {
+    width: 36px;
+    height: 36px;
+  }
+  .chat-device-empty {
+    padding: 16px 7px;
+    text-align: center;
+    overflow-wrap: anywhere;
   }
   #chat-app .chat-mobile-back {
     display: grid;
